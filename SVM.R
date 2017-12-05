@@ -10,10 +10,13 @@ attach(DF)
 
 ix = 7:57
 DF[ix] = lapply(DF[ix], as.factor)
-set.seed(10)
+set.seed(3)
+DF$remove[DF$in_32==0 | DF$in_33==0 |DF$in_34==0 | DF$in_34==0] <- 1
+DF=DF[DF$remove==0,]
 test=sample(1:nrow(DF),nrow(DF)/4)
 DF_train=DF[-test,]
 DF_test=DF[test,]
+
 #DF$improve=factor(DF$improve)
 
 subdata_train=subset(DF_train,select=c(7:57))
@@ -73,10 +76,10 @@ rocplot =function(pred, truth, ...){
   plot(perf,...)}
 
 bestlin.ROC=svm(improve~., data=subdata_train, kernel ="linear",
-               cost=8, decision.values=T)
+               cost=32, decision.values=T)
 
 bestpoly.ROC=svm(improve~., data=subdata_train, kernel ="poly",
-                cost=1024, d =8, decision.values=T)
+                cost=32, d =8, decision.values=T)
 
 bestrad.ROC=svm(improve~., data=subdata_train, kernel ="rad",
                 cost=2, gamma = 1, decision.values=T)
