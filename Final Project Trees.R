@@ -2,9 +2,12 @@ library(tree)
 library(randomForest)
 library(adabag)
 library(caret)
+library(class)
 set.seed(29)
 
 df <- read.csv("DS502/Final Project/analysisDF.csv", header = TRUE)
+df$remove[df$in_32 == 0 | df$in_33 == 0 | df$in_34 == 0 | df$in_34 == 0] <- 1
+df <- df[df$remove == 0,]
 keep <- c(11:60, 64)
 df <- df[,keep]
 
@@ -30,7 +33,7 @@ confusionMatrix(pred, test$improve)["table"]
 cv <- cv.tree(tree, FUN = prune.tree)
 plot(cv$size, cv$dev, type = "l")
 
-pruned <- prune.tree(tree, best = 3)
+pruned <- prune.tree(tree, best = 5)
 plot(pruned)
 text(pruned)
 pred_pruned <- predict(pruned, test, type = "class")
@@ -66,4 +69,4 @@ pred_boost$confusion
 importanceplot(boost)
 
 knn_pred = knn(train, test, train$improve, k = 1)
-table(knn_pred, test$improve)
+confusionMatrix(knn_pred, test$improve)
